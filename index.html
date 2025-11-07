@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University GPA Calculator & Maintainer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="py-4 mb-4">
+            <h1 class="text-center">🎓 University GPA Calculator & Maintainer</h1>
+            <p class="text-center text-muted">Track your academic progress across 8 semesters</p>
+        </header>
+
+        <!-- Overall GPA Summary Card -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card gpa-summary-card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Cumulative GPA Overview</h2>
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <h3 class="display-4" id="overallCGPA">3.78</h3>
+                                <p class="text-muted">Overall CGPA</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="display-4" id="completedSemesters">2/8</h3>
+                                <p class="text-muted">Completed Semesters</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Semester Tabs -->
+        <ul class="nav nav-pills mb-4 justify-content-center" id="semesterTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="sem1-tab" data-bs-toggle="pill" data-bs-target="#sem1" type="button">Sem 1</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sem2-tab" data-bs-toggle="pill" data-bs-target="#sem2" type="button">Sem 2</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sem3-tab" data-bs-toggle="pill" data-bs-target="#sem3" type="button">Sem 3</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sem4-tab" data-bs-toggle="pill" data-bs-target="#sem4" type="button">Sem 4</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sem5-tab" data-bs-toggle="pill" data-bs-target="#sem5" type="button">Sem 5</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sem6-tab" data-bs-toggle="pill" data-bs-target="#sem6" type="button">Sem 6</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sem7-tab" data-bs-toggle="pill" data-bs-target="#sem7" type="button">Sem 7</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sem8-tab" data-bs-toggle="pill" data-bs-target="#sem8" type="button">Sem 8</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="summary-tab" data-bs-toggle="pill" data-bs-target="#summary" type="button">Summary</button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="semesterTabContent">
+            <!-- Semester 1 -->
+            <div class="tab-pane fade show active" id="sem1" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Semester 01 - SGPA: 3.85</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SNo</th>
+                                        <th>Module Code</th>
+                                        <th>Module Title</th>
+                                        <th>Grade</th>
+                                        <th>Grade Point</th>
+                                        <th>NGPA</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sem1-table">
+                                    <!-- Data loaded from JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semester 2 -->
+            <div class="tab-pane fade" id="sem2" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Semester 02 - SGPA: 3.71</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SNo</th>
+                                        <th>Module Code</th>
+                                        <th>Module Title</th>
+                                        <th>Grade</th>
+                                        <th>Grade Point</th>
+                                        <th>NGPA</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sem2-table">
+                                    <!-- Data loaded from JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semester 3 -->
+            <div class="tab-pane fade" id="sem3" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Semester 03 - SGPA: TBD</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SNo</th>
+                                        <th>Module Code</th>
+                                        <th>Module Title</th>
+                                        <th>Grade</th>
+                                        <th>Grade Point</th>
+                                        <th>NGPA</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sem3-table">
+                                    <!-- Data loaded from JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semester 4 -->
+            <div class="tab-pane fade" id="sem4" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Semester 04 - SGPA: TBD</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>SNo</th>
+                                        <th>Module Code</th>
+                                        <th>Module Title</th>
+                                        <th>Grade</th>
+                                        <th>Grade Point</th>
+                                        <th>NGPA</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sem4-table">
+                                    <!-- Data loaded from JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semesters 5-8 (Empty for now) -->
+            <div class="tab-pane fade" id="sem5" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Semester 05 - SGPA: 0.00</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-center text-muted">No data available yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="sem6" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Semester 06 - SGPA: 0.00</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-center text-muted">No data available yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="sem7" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Semester 07 - SGPA: 0.00</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-center text-muted">No data available yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="sem8" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Semester 08 - SGPA: 0.00</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-center text-muted">No data available yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Tab -->
+            <div class="tab-pane fade" id="summary" role="tabpanel">
+                <div class="card semester-card">
+                    <div class="card-header">
+                        <h3>Cumulative GPA Summary</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Semester</th>
+                                        <th>SGPA</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="summary-table">
+                                    <!-- Data loaded from JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <h2>Overall CGPA: <span class="badge bg-success">3.78</span></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
