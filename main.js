@@ -47,7 +47,7 @@ const semesterData = {
     { sno: 7, code: 'ITC1233', title: 'Object Oriented Programming', grade: 'A-', ngpa: 'No', remarks: 'A expected' }
   ],
   semester3: [
-    { sno: 1, code: 'ITC2192', title: 'Mathematics for ICT', grade: '', ngpa: 'No', remarks: 'A,A-' },
+    { sno: 1, code: 'ITC2192', title: 'Mathematics for ICT', grade: 'A', ngpa: 'No', remarks: 'A,A-' },
     { sno: 2, code: 'ITC2212', title: 'Data Structures and Algorithms', grade: 'A', ngpa: 'No', remarks: '' },
     { sno: 3, code: 'ITC2243', title: 'Networking Essentials', grade: 'B', ngpa: 'No', remarks: '' },
     { sno: 4, code: 'ITC2272', title: 'Operating Systems', grade: 'B-', ngpa: 'No', remarks: '' },
