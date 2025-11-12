@@ -51,7 +51,7 @@ const semesterData = {
     { sno: 2, code: 'ITC2212', title: 'Data Structures and Algorithms', grade: 'A', ngpa: 'No', remarks: '' },
     { sno: 3, code: 'ITC2243', title: 'Networking Essentials', grade: 'B', ngpa: 'No', remarks: '' },
     { sno: 4, code: 'ITC2272', title: 'Operating Systems', grade: 'B-', ngpa: 'No', remarks: '' },
-    { sno: 5, code: 'ITC2303', title: 'Visual Application Programming', grade: '', ngpa: 'No', remarks: 'A' },
+    { sno: 5, code: 'ITC2303', title: 'Visual Application Programming', grade: 'A', ngpa: 'No', remarks: 'A' },
     { sno: 6, code: 'ITC2342', title: 'Fundamentals of Multimedia', grade: 'B+', ngpa: 'No', remarks: 'A,A-' }
   ],
   semester4: [
