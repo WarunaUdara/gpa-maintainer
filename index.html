@@ -23,11 +23,11 @@
                         <h2 class="card-title text-center mb-4">Cumulative GPA Overview</h2>
                         <div class="row text-center">
                             <div class="col-md-6">
-                                <h3 class="display-4" id="overallCGPA">3.78</h3>
+                                <h3 class="display-4" id="overallCGPA">0.00</h3>
                                 <p class="text-muted">Overall CGPA</p>
                             </div>
                             <div class="col-md-6">
-                                <h3 class="display-4" id="completedSemesters">2/8</h3>
+                                <h3 class="display-4" id="completedSemesters">0/8</h3>
                                 <p class="text-muted">Completed Semesters</p>
                             </div>
                         </div>
@@ -73,7 +73,7 @@
             <div class="tab-pane fade show active" id="sem1" role="tabpanel">
                 <div class="card semester-card">
                     <div class="card-header">
-                        <h3>Semester 01 - SGPA: 3.85</h3>
+                        <h3 id="sem1-header">Semester 01 - SGPA: Loading...</h3>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -90,9 +90,7 @@
                                         <th>Remarks</th>
                                     </tr>
                                 </thead>
-                                <tbody id="sem1-table">
-                                    <!-- Data loaded from JS -->
-                                </tbody>
+                                <tbody id="sem1-table"></tbody>
                             </table>
                         </div>
                     </div>
@@ -103,7 +101,7 @@
             <div class="tab-pane fade" id="sem2" role="tabpanel">
                 <div class="card semester-card">
                     <div class="card-header">
-                        <h3>Semester 02 - SGPA: 3.71</h3>
+                        <h3 id="sem2-header">Semester 02 - SGPA: Loading...</h3>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -120,9 +118,7 @@
                                         <th>Remarks</th>
                                     </tr>
                                 </thead>
-                                <tbody id="sem2-table">
-                                    <!-- Data loaded from JS -->
-                                </tbody>
+                                <tbody id="sem2-table"></tbody>
                             </table>
                         </div>
                     </div>
@@ -133,7 +129,7 @@
             <div class="tab-pane fade" id="sem3" role="tabpanel">
                 <div class="card semester-card">
                     <div class="card-header">
-                        <h3>Semester 03 - SGPA: TBD</h3>
+                        <h3 id="sem3-header">Semester 03 - SGPA: Loading...</h3>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -150,9 +146,7 @@
                                         <th>Remarks</th>
                                     </tr>
                                 </thead>
-                                <tbody id="sem3-table">
-                                    <!-- Data loaded from JS -->
-                                </tbody>
+                                <tbody id="sem3-table"></tbody>
                             </table>
                         </div>
                     </div>
@@ -163,7 +157,7 @@
             <div class="tab-pane fade" id="sem4" role="tabpanel">
                 <div class="card semester-card">
                     <div class="card-header">
-                        <h3>Semester 04 - SGPA: TBD</h3>
+                        <h3 id="sem4-header">Semester 04 - SGPA: Loading...</h3>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -180,20 +174,18 @@
                                         <th>Remarks</th>
                                     </tr>
                                 </thead>
-                                <tbody id="sem4-table">
-                                    <!-- Data loaded from JS -->
-                                </tbody>
+                                <tbody id="sem4-table"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Semesters 5-8 (Empty for now) -->
+            <!-- Semesters 5-8 -->
             <div class="tab-pane fade" id="sem5" role="tabpanel">
                 <div class="card semester-card">
                     <div class="card-header">
-                        <h3>Semester 05 - SGPA: 0.00</h3>
+                        <h3 id="sem5-header">Semester 05 - SGPA: 0.00</h3>
                     </div>
                     <div class="card-body">
                         <p class="text-center text-muted">No data available yet</p>
@@ -204,7 +196,7 @@
             <div class="tab-pane fade" id="sem6" role="tabpanel">
                 <div class="card semester-card">
                     <div class="card-header">
-                        <h3>Semester 06 - SGPA: 0.00</h3>
+                        <h3 id="sem6-header">Semester 06 - SGPA: 0.00</h3>
                     </div>
                     <div class="card-body">
                         <p class="text-center text-muted">No data available yet</p>
@@ -215,7 +207,7 @@
             <div class="tab-pane fade" id="sem7" role="tabpanel">
                 <div class="card semester-card">
                     <div class="card-header">
-                        <h3>Semester 07 - SGPA: 0.00</h3>
+                        <h3 id="sem7-header">Semester 07 - SGPA: 0.00</h3>
                     </div>
                     <div class="card-body">
                         <p class="text-center text-muted">No data available yet</p>
@@ -226,7 +218,7 @@
             <div class="tab-pane fade" id="sem8" role="tabpanel">
                 <div class="card semester-card">
                     <div class="card-header">
-                        <h3>Semester 08 - SGPA: 0.00</h3>
+                        <h3 id="sem8-header">Semester 08 - SGPA: 0.00</h3>
                     </div>
                     <div class="card-body">
                         <p class="text-center text-muted">No data available yet</p>
@@ -250,13 +242,11 @@
                                         <th>Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="summary-table">
-                                    <!-- Data loaded from JS -->
-                                </tbody>
+                                <tbody id="summary-table"></tbody>
                             </table>
                         </div>
                         <div class="mt-4 text-center">
-                            <h2>Overall CGPA: <span class="badge bg-success">3.78</span></h2>
+                            <h2>Overall CGPA: <span class="badge bg-success" id="summary-cgpa">0.00</span></h2>
                         </div>
                     </div>
                 </div>
