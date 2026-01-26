@@ -19,13 +19,12 @@ const gradePoints = {
 const nonGpaGrades = ['CA-AB', 'ESA-AB', 'N', 'CA-N', 'ESA-N', 'W'];
 
 // Function to extract credits from module code
-// Format: ABC1234 - last digit is credits
 function getCreditsFromCode(moduleCode) {
   const lastChar = moduleCode.trim().slice(-1);
   return parseInt(lastChar) || 0;
 }
 
-// Hardcoded semester data (credits auto-extracted from module code)
+// Hardcoded semester data
 const semesterData = {
   semester1: [
     { sno: 1, code: 'ITC1013', title: 'Mathematics I', grade: 'A-', ngpa: 'No', remarks: '' },
@@ -62,7 +61,11 @@ const semesterData = {
     { sno: 5, code: 'ITC2302', title: 'Network Systems Design', grade: 'A-', ngpa: 'No', remarks: 'A-' },
     { sno: 6, code: 'ITC2353', title: 'Introduction to Graphic Design', grade: 'A-', ngpa: 'No', remarks: 'A-' },
     { sno: 7, code: 'ITC2242', title: 'Economics and Financial Management', grade: 'A', ngpa: 'No', remarks: 'A' }
-  ]
+  ],
+  semester5: [],
+  semester6: [],
+  semester7: [],
+  semester8: []
 };
 
 // Module class for proper calculation
@@ -88,7 +91,6 @@ class Module {
 }
 
 // Calculate SGPA for a semester
-// Formula: SGPA = Σ(Ci × GPi) / ΣCi
 function calculateSGPA(modules) {
   const gpaModules = modules.filter(m => {
     const mod = new Module(m.sno, m.code, m.title, m.grade, m.ngpa, m.remarks);
@@ -110,7 +112,6 @@ function calculateSGPA(modules) {
 }
 
 // Calculate CGPA across all semesters
-// Formula: CGPA = Σ(Ci × GPi) / ΣCi (for all completed modules)
 function calculateCGPA() {
   let totalWeightedPoints = 0;
   let totalCredits = 0;
@@ -128,7 +129,7 @@ function calculateCGPA() {
   return totalCredits > 0 ? (totalWeightedPoints / totalCredits) : 0;
 }
 
-// SGPA data (will be auto-calculated)
+// SGPA data
 const sgpaData = [
   { semester: 1, sgpa: 0, status: 'Pending' },
   { semester: 2, sgpa: 0, status: 'Pending' },
@@ -142,17 +143,16 @@ const sgpaData = [
 
 // Update SGPA values based on actual data
 function updateAllSGPA() {
-  sgpaData[0].sgpa = calculateSGPA(semesterData.semester1);
-  sgpaData[0].status = sgpaData[0].sgpa > 0 ? 'Completed' : 'Pending';
-  
-  sgpaData[1].sgpa = calculateSGPA(semesterData.semester2);
-  sgpaData[1].status = sgpaData[1].sgpa > 0 ? 'Completed' : 'Pending';
-  
-  sgpaData[2].sgpa = calculateSGPA(semesterData.semester3);
-  sgpaData[2].status = sgpaData[2].sgpa > 0 ? 'Completed' : 'Pending';
-  
-  sgpaData[3].sgpa = calculateSGPA(semesterData.semester4);
-  sgpaData[3].status = sgpaData[3].sgpa > 0 ? 'Completed' : 'Pending';
+  for (let i = 1; i <= 8; i++) {
+    const semesterKey = `semester${i}`;
+    if (semesterData[semesterKey] && semesterData[semesterKey].length > 0) {
+      sgpaData[i-1].sgpa = calculateSGPA(semesterData[semesterKey]);
+      sgpaData[i-1].status = sgpaData[i-1].sgpa > 0 ? 'Completed' : 'Pending';
+    } else {
+      sgpaData[i-1].sgpa = 0;
+      sgpaData[i-1].status = 'Pending';
+    }
+  }
 }
 
 // Function to get grade badge class
@@ -160,6 +160,8 @@ function getGradeBadgeClass(grade) {
   if (grade === 'A' || grade === 'A+') return 'grade-badge grade-A';
   if (grade === 'A-') return 'grade-badge grade-A-minus';
   if (grade === 'B+') return 'grade-badge grade-B-plus';
+  if (grade === 'B') return 'grade-badge grade-B';
+  if (grade === 'B-') return 'grade-badge grade-B-minus';
   if (grade === '') return 'grade-badge grade-pending';
   return 'grade-badge';
 }
@@ -167,9 +169,19 @@ function getGradeBadgeClass(grade) {
 // Function to render semester table
 function renderSemesterTable(semesterId, data) {
   const tableBody = document.getElementById(`${semesterId}-table`);
-  if (!tableBody) return;
+  if (!tableBody) {
+    console.warn(`Table body not found for ${semesterId}`);
+    return;
+  }
 
   tableBody.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="8" class="text-center text-muted">No data available</td>';
+    tableBody.appendChild(tr);
+    return;
+  }
 
   data.forEach(row => {
     const mod = new Module(row.sno, row.code, row.title, row.grade, row.ngpa, row.remarks);
@@ -191,7 +203,10 @@ function renderSemesterTable(semesterId, data) {
 // Function to render summary table
 function renderSummaryTable() {
   const summaryTable = document.getElementById('summary-table');
-  if (!summaryTable) return;
+  if (!summaryTable) {
+    console.warn('Summary table not found');
+    return;
+  }
 
   summaryTable.innerHTML = '';
 
@@ -207,50 +222,78 @@ function renderSummaryTable() {
   });
 }
 
-// Initialize the app
-function init() {
-  // Calculate all SGPA values
-  updateAllSGPA();
+// Update semester headers with calculated SGPA
+function updateSemesterHeaders() {
+  for (let i = 1; i <= 8; i++) {
+    const header = document.getElementById(`sem${i}-header`);
+    if (header && sgpaData[i-1]) {
+      const sgpa = sgpaData[i-1].sgpa;
+      const sgpaText = sgpa > 0 ? sgpa.toFixed(2) : '0.00';
+      header.textContent = `Semester ${String(i).padStart(2, '0')} - SGPA: ${sgpaText}`;
+    }
+  }
+}
 
+// Update all UI elements
+function updateUI() {
   // Update CGPA
   const cgpa = calculateCGPA();
-  document.getElementById('overallCGPA').textContent = cgpa.toFixed(2);
+  const overallCGPAElement = document.getElementById('overallCGPA');
+  const summaryCGPAElement = document.getElementById('summary-cgpa');
+  
+  if (overallCGPAElement) {
+    overallCGPAElement.textContent = cgpa.toFixed(2);
+  }
+  if (summaryCGPAElement) {
+    summaryCGPAElement.textContent = cgpa.toFixed(2);
+  }
 
-  // Render all semester tables
-  renderSemesterTable('sem1', semesterData.semester1);
-  renderSemesterTable('sem2', semesterData.semester2);
-  renderSemesterTable('sem3', semesterData.semester3);
-  renderSemesterTable('sem4', semesterData.semester4);
+  // Update completed semesters count
+  const completedCount = sgpaData.filter(s => s.status === 'Completed').length;
+  const completedSemestersElement = document.getElementById('completedSemesters');
+  if (completedSemestersElement) {
+    completedSemestersElement.textContent = `${completedCount}/8`;
+  }
 
-  // Update semester headers with calculated SGPA
+  // Update semester headers
   updateSemesterHeaders();
 
   // Render summary table
   renderSummaryTable();
 
-  // Calculate completed semesters
-  const completedCount = sgpaData.filter(s => s.status === 'Completed').length;
-  document.getElementById('completedSemesters').textContent = `${completedCount}/8`;
+  console.log('✅ UI Updated Successfully');
+  console.log(`📊 Current CGPA: ${cgpa.toFixed(2)}`);
+  console.log(`✅ Completed Semesters: ${completedCount}/8`);
 }
 
-// Update semester headers with calculated SGPA
-function updateSemesterHeaders() {
-  for (let i = 1; i <= 4; i++) {
-    const header = document.querySelector(`#sem${i} .card-header h3`);
-    if (header && sgpaData[i-1]) {
-      const sgpa = sgpaData[i-1].sgpa;
-      const sgpaText = sgpa > 0 ? sgpa.toFixed(2) : 'TBD';
-      header.textContent = `Semester 0${i} - SGPA: ${sgpaText}`;
+// Initialize the app
+function init() {
+  console.log('🚀 Initializing GPA Calculator...');
+  
+  // Calculate all SGPA values
+  updateAllSGPA();
+
+  // Render all semester tables
+  for (let i = 1; i <= 8; i++) {
+    const semesterKey = `semester${i}`;
+    if (semesterData[semesterKey]) {
+      renderSemesterTable(`sem${i}`, semesterData[semesterKey]);
     }
   }
+
+  // Update all UI elements
+  updateUI();
+
+  console.log('✅ GPA Calculator Initialized');
+  console.log('━'.repeat(60));
+  console.log('📱 Admin Panel: window.adminPanel');
+  console.log('📖 Help: adminPanel.help()');
+  console.log('━'.repeat(60));
 }
 
-// Run on page load
-document.addEventListener('DOMContentLoaded', init);
+// Admin Functions
 
-// Admin Functions - Easy to modify data
-
-// Function to update a grade (admin function)
+// Function to update a grade
 function updateGrade(semester, moduleCode, newGrade) {
   const semesterKey = `semester${semester}`;
   const data = semesterData[semesterKey];
@@ -271,17 +314,12 @@ function updateGrade(semester, moduleCode, newGrade) {
 
   // Recalculate everything
   updateAllSGPA();
-  const cgpa = calculateCGPA();
   
   // Update UI
-  document.getElementById('overallCGPA').textContent = cgpa.toFixed(2);
   renderSemesterTable(`sem${semester}`, data);
-  updateSemesterHeaders();
-  renderSummaryTable();
+  updateUI();
   
-  const completedCount = sgpaData.filter(s => s.status === 'Completed').length;
-  document.getElementById('completedSemesters').textContent = `${completedCount}/8`;
-  
+  const cgpa = calculateCGPA();
   console.log(`✅ Updated ${moduleCode}: ${oldGrade || 'Empty'} → ${newGrade}`);
   console.log(`📊 New SGPA for Semester ${semester}: ${sgpaData[semester-1].sgpa.toFixed(2)}`);
   console.log(`📈 New CGPA: ${cgpa.toFixed(2)}`);
@@ -310,10 +348,8 @@ function addModule(semester, moduleCode, moduleTitle, grade, isNGPA = false, rem
   
   // Recalculate and refresh
   updateAllSGPA();
-  const cgpa = calculateCGPA();
-  document.getElementById('overallCGPA').textContent = cgpa.toFixed(2);
   renderSemesterTable(`sem${semester}`, data);
-  updateSemesterHeaders();
+  updateUI();
   
   console.log(`✅ Added module ${moduleCode} to Semester ${semester}`);
 }
@@ -351,7 +387,7 @@ function viewSemesterDetails(semester) {
   console.log(`Formula: ${totalWeightedPoints.toFixed(2)} ÷ ${totalCredits} = ${sgpa.toFixed(2)}`);
 }
 
-// Expose admin functions globally for easy console access
+// Expose admin functions globally
 window.adminPanel = {
   updateGrade,
   addModule,
@@ -363,6 +399,17 @@ window.adminPanel = {
   calculateCGPA: () => calculateCGPA().toFixed(2),
   viewData: () => console.log({ semesterData, sgpaData, gradePoints }),
   gradePoints,
+  refresh: () => {
+    updateAllSGPA();
+    for (let i = 1; i <= 8; i++) {
+      const semesterKey = `semester${i}`;
+      if (semesterData[semesterKey]) {
+        renderSemesterTable(`sem${i}`, semesterData[semesterKey]);
+      }
+    }
+    updateUI();
+    console.log('✅ Data refreshed!');
+  },
   help: () => {
     console.log(`
 🎓 GPA Calculator - Admin Panel
@@ -372,7 +419,7 @@ window.adminPanel = {
 
 1. Update a Grade:
    adminPanel.updateGrade(semester, "MODULE_CODE", "GRADE")
-   Example: adminPanel.updateGrade(3, "ITC2192", "A")
+   Example: adminPanel.updateGrade(4, "ITC2223", "A+")
 
 2. Add a Module:
    adminPanel.addModule(semester, "CODE", "Title", "GRADE", isNGPA, "remarks")
@@ -380,11 +427,11 @@ window.adminPanel = {
 
 3. View Semester Details:
    adminPanel.viewSemesterDetails(semester)
-   Example: adminPanel.viewSemesterDetails(1)
+   Example: adminPanel.viewSemesterDetails(4)
 
 4. Calculate SGPA:
    adminPanel.calculateSGPA(semester)
-   Example: adminPanel.calculateSGPA(1)
+   Example: adminPanel.calculateSGPA(4)
 
 5. Calculate CGPA:
    adminPanel.calculateCGPA()
@@ -392,7 +439,10 @@ window.adminPanel = {
 6. View All Data:
    adminPanel.viewData()
 
-7. Grade Points Reference:
+7. Refresh UI:
+   adminPanel.refresh()
+
+8. Grade Points Reference:
    adminPanel.gradePoints
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -410,11 +460,5 @@ Example: ITC2193 → 3 credits
   }
 };
 
-console.log('🎓 GPA Calculator loaded successfully!');
-console.log('━'.repeat(60));
-console.log('📱 Admin Panel: window.adminPanel');
-console.log('📖 Help: adminPanel.help()');
-console.log('━'.repeat(60));
-console.log(`📊 Current CGPA: ${calculateCGPA().toFixed(2)}`);
-console.log(`✅ Completed Semesters: ${sgpaData.filter(s => s.status === 'Completed').length}/8`);
-console.log('━'.repeat(60));
+// Run on page load
+document.addEventListener('DOMContentLoaded', init);
