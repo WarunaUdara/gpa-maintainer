@@ -54,13 +54,13 @@ const semesterData = {
     { sno: 6, code: 'ITC2342', title: 'Fundamentals of Multimedia', grade: 'B+', ngpa: 'No', remarks: 'A,A-' }
   ],
   semester4: [
-    { sno: 1, code: 'ITC2223', title: 'Web Application Development', grade: 'A', ngpa: 'No', remarks: 'A' },
-    { sno: 2, code: 'ITC2252', title: 'Introduction to Machine Learning', grade: 'A', ngpa: 'No', remarks: 'A' },
-    { sno: 3, code: 'ITC2282', title: 'Advanced Data Structures and Algorithms', grade: 'A', ngpa: 'No', remarks: 'A' },
-    { sno: 4, code: 'ITC2292', title: 'Digital Control Systems Technology', grade: 'A', ngpa: 'No', remarks: 'A' },
-    { sno: 5, code: 'ITC2302', title: 'Network Systems Design', grade: 'A-', ngpa: 'No', remarks: 'A-' },
-    { sno: 6, code: 'ITC2353', title: 'Introduction to Graphic Design', grade: 'A-', ngpa: 'No', remarks: 'A-' },
-    { sno: 7, code: 'ITC2242', title: 'Economics and Financial Management', grade: 'A', ngpa: 'No', remarks: 'A' }
+    { sno: 1, code: 'ITC2223', title: 'Web Application Development', grade: '', ngpa: 'No', remarks: 'A' },
+    { sno: 2, code: 'ITC2252', title: 'Introduction to Machine Learning', grade: '', ngpa: 'No', remarks: 'A' },
+    { sno: 3, code: 'ITC2282', title: 'Advanced Data Structures and Algorithms', grade: '', ngpa: 'No', remarks: 'A' },
+    { sno: 4, code: 'ITC2292', title: 'Digital Control Systems Technology', grade: '', ngpa: 'No', remarks: 'A' },
+    { sno: 5, code: 'ITC2302', title: 'Network Systems Design', grade: '', ngpa: 'No', remarks: 'A-' },
+    { sno: 6, code: 'ITC2353', title: 'Introduction to Graphic Design', grade: '', ngpa: 'No', remarks: 'A-' },
+    { sno: 7, code: 'ITC2242', title: 'Economics and Financial Management', grade: '', ngpa: 'No', remarks: 'A' }
   ],
   semester5: [],
   semester6: [],
