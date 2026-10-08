@@ -6,6 +6,7 @@ import {
 } from '../lib/gpa';
 import { chartData } from '../lib/chart';
 import { transcriptCSV } from '../lib/export';
+import { firstClassPlan } from '../lib/targets';
 
 const STORAGE_KEY = 'gpa-maintainer:grade-overrides:v2';
 let overrides: Record<string, GradeOverride> = {};
@@ -98,6 +99,24 @@ function renderChart() {
   }
   setText('#chart-desc', `Recorded semester GPAs are ${chart.filter(point => point.sgpa !== null).map(point => `semester ${point.id}: ${formatGPA(point.sgpa)}`).join(', ')}. Unrecorded semesters are left blank.`);
 }
+function refreshFirstClassPlan() {
+  const plan = firstClassPlan(semesters);
+  setText('#target-current-cgpa', formatGPA(plan.currentGpa));
+  setText('#target-current-margin', plan.currentMargin === null ? '—'
+    : plan.currentMargin > 0 ? `${plan.currentMargin.toFixed(2)} above`
+      : plan.currentMargin < 0 ? `${Math.abs(plan.currentMargin).toFixed(2)} below` : 'on');
+  setText('#past-weighted-gpa', formatGPA(plan.historicalGpa));
+  setText('#target-minimum-gpa', plan.minimumTarget?.toFixed(2) ?? '—');
+  setText('#target-floor-rule', plan.minimumTarget === null ? '—' : `${plan.minimumTarget.toFixed(2)} or higher`);
+  setText('#target-outstanding-credits', plan.outstandingCredits);
+  setText('#target-a-credits', plan.requiredAGrades);
+  setText('#target-minimum-caption', !plan.outstandingCredits ? 'No ungraded GPA credits are listed.'
+    : plan.minimumReachable ? `Minimum weighted average on these ${plan.outstandingCredits} ungraded GPA credits to finish above 3.70.`
+      : `These listed credits alone cannot restore a 3.70 CGPA. Semesters 7–8 need published module lists.`);
+  setText('#target-projection-caption', plan.outstandingCredits
+    ? `At a 3.80 average over those ${plan.outstandingCredits} listed credits, your projected CGPA is ${formatGPA(plan.projectedAtTarget)}. Later course credits are not yet listed.`
+    : `Your current projected CGPA is ${formatGPA(plan.projectedAtTarget)}. Record your future course credits to set the next target.`);
+}
 function refresh() {
   const overall = overallStats(semesters);
   setText('#overall-gpa', formatGPA(overall.gpa));
@@ -176,6 +195,7 @@ function refresh() {
     row.insertCell().append(pill);
   }
   renderChart();
+  refreshFirstClassPlan();
   const savedCount = Object.keys(overrides).length;
   setText('#storage-note', !storageAvailable ? 'Browser storage unavailable · Changes last for this session. Export CSV to keep a copy.'
     : savedCount ? `${savedCount} local grade ${savedCount === 1 ? 'edit' : 'edits'} · Saved in this browser. Export CSV to keep a copy.`

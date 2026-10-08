@@ -6,8 +6,10 @@ import ModuleRows from '../components/ModuleRows.astro';
 import { transcript } from '../data/transcript';
 import { overallStats, semesterStats, formatGPA } from '../lib/gpa';
 import { chartData } from '../lib/chart';
+import { firstClassPlan } from '../lib/targets';
 const overall = overallStats(transcript);
 const chart = chartData(transcript);
+const targets = firstClassPlan(transcript);
 ---
 <!doctype html>
 <html lang="en">
@@ -30,6 +32,7 @@ const chart = chartData(transcript);
         <nav aria-label="Main navigation">
           <a class="nav-current" href="#overview">Overview</a>
           <a href="#transcript">Transcript</a>
+          <a href="#targets">Targets</a>
           <span class="nav-divider"></span>
           <button class="text-button" id="export-button" type="button"><Icon name="download" /><span>Export CSV</span></button>
         </nav>
@@ -88,6 +91,28 @@ const chart = chartData(transcript);
             })}
           </div>
           <div class="progress-legend"><span><i class="recorded-key"></i>Result recorded</span><span><i class="pending-key"></i>Awaiting result</span></div>
+        </div>
+      </section>
+
+      <section class="target-panel" id="targets" aria-labelledby="target-title">
+        <div class="target-intro">
+          <p class="eyebrow"><span class="tiny-mark"></span> YOUR FIRST-CLASS PLAN</p>
+          <h2 id="target-title">Keep your CGPA<br />above <span>3.70.</span></h2>
+          <p>Your current <strong id="target-current-cgpa">{formatGPA(targets.currentGpa)}</strong> CGPA is <span id="target-current-margin">{targets.currentMargin !== null ? `${Math.abs(targets.currentMargin).toFixed(2)} ${targets.currentMargin > 0 ? 'above' : 'below'}` : '—'}</span> the first-class line, based on grades recorded so far.</p>
+          <p class="history-context">Semesters 1–4 averaged <strong id="past-weighted-gpa">{formatGPA(targets.historicalGpa)}</strong> across {targets.historicalCredits} graded credits. The 3.80 plan stretches above that proven pace while staying in reach.</p>
+        </div>
+        <div class="target-metrics" aria-label="Personalized GPA targets">
+          <div class="target-metric"><span class="target-label">Minimum to protect first class</span><span class="target-number" id="target-minimum-gpa">{targets.minimumTarget?.toFixed(2) ?? '—'}</span><span class="target-caption" id="target-minimum-caption">{targets.outstandingCredits ? `Average across ${targets.outstandingCredits} currently ungraded GPA credits keeps your final CGPA above 3.70.` : 'No ungraded GPA credits are listed.'}</span></div>
+          <div class="target-metric highlight-metric"><span class="target-label">Your working target</span><span class="target-number" id="target-recommended-gpa">3.80</span><span class="target-caption" id="target-projection-caption">At 3.80 on those listed credits, your projected CGPA is {formatGPA(targets.projectedAtTarget)}. Semesters 7–8 are not listed yet.</span></div>
+        </div>
+        <div class="target-actions">
+          <p class="eyebrow">THE THREE RULES</p>
+          <ol>
+            <li><span class="target-step">01</span><span><strong>Protect the floor.</strong> Keep the average across your <strong id="target-outstanding-credits">{targets.outstandingCredits}</strong> currently ungraded GPA credits at <strong id="target-floor-rule">{targets.minimumTarget?.toFixed(2) ?? '—'} or higher</strong>. This calculation updates when you record a grade.</span></li>
+            <li><span class="target-step">02</span><span><strong>Aim for 3.80.</strong> At that pace, target <strong id="target-a-credits">{targets.requiredAGrades}</strong> credits at A or A+, then at least A− on the remaining listed credits.</span></li>
+            <li><span class="target-step">03</span><span><strong>Make the next step small.</strong> Once a week, pick the nearest deadline and define just one 15-minute first step. Log official results here when released.</span></li>
+          </ol>
+          <p class="target-footnote"><span class="tiny-mark"></span> The estimate uses your recorded {targets.currentCredits} GPA credits and the {targets.outstandingCredits} GPA credits currently awaiting results across the listed semesters. The future Semester 7–8 course lists are unknown, so the projected CGPA covers only these published modules.</p>
         </div>
       </section>
 

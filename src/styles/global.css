@@ -85,6 +85,28 @@ h1 > span { color: var(--fog); }
 .chart-legend i { height: 1px; width: 14px; background: var(--mist); }
 .chart-legend i.dashed { background: none; border-top: 1px dashed var(--fog); }
 .chart-legend .chart-note { margin-left: auto; font-size: 9px; }
+.target-panel { scroll-margin-top: 96px; margin-top: 24px; display: grid; grid-template-columns: 1.05fr .95fr; background: var(--carbon); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.target-intro { padding: 26px 32px; border-right: 1px solid var(--border); }
+.target-intro h2 { margin-top: 12px; font-size: 31px; line-height: 1.14; letter-spacing: -.022em; }
+.target-intro h2 span { color: var(--fog); }
+.target-intro > p:not(.eyebrow):not(.history-context) { color: var(--fog); font-size: 12px; margin-top: 14px; line-height: 1.65; max-width: 390px; }
+.target-intro > p > strong { color: var(--white); font-weight: 510; font-variant-numeric: tabular-nums; }
+.target-intro .history-context { border-top: 1px solid var(--border); margin-top: 17px; padding-top: 13px; color: var(--fog); font-size: 10px; line-height: 1.65; max-width: 430px; }
+.history-context strong { font-weight: 510; color: var(--mist); font-variant-numeric: tabular-nums; }
+.target-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 24px; align-content: center; }
+.target-metric { min-height: 138px; padding: 16px; border: 1px solid var(--border); border-radius: 6px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.target-label { font-size: 10px; line-height: 1.45; color: var(--fog); min-height: 29px; }
+.target-number { font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -.04em; color: var(--white); }
+.target-caption { color: var(--fog); font-size: 9px; line-height: 1.55; }
+.highlight-metric { background: rgba(255,255,255,.02); }
+.target-actions { grid-column: 1 / -1; padding: 18px 32px 20px; border-top: 1px solid var(--border); }
+.target-actions ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; }
+.target-actions li { display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 11px; line-height: 1.7; color: var(--fog); }
+.target-actions li:last-child { border-bottom: 0; }
+.target-actions li strong { color: var(--mist); font-weight: 510; }
+.target-step { padding-top: 1px; font: 10px var(--mono); color: var(--fog); }
+.target-footnote { display: flex; align-items: flex-start; gap: 8px; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 14px; color: var(--fog); font-size: 9px; line-height: 1.65; }
+.target-footnote .tiny-mark { flex-shrink: 0; margin-top: 4px; }
 .completion-panel { grid-column: 1 / -1; padding: 22px 32px 20px; border-top: 1px solid var(--border); }
 .completion-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .completion-heading > div > p { color: var(--fog); font-size: 11px; margin-top: 4px; }
@@ -202,6 +224,11 @@ dialog::backdrop { background: rgba(0,0,0,.8); }
   .overview-stats { gap: 24px; }
   .status-pill { display: none; }
   .method-section { gap: 32px; }
+  .target-intro { padding: 24px; }
+  .target-metrics { padding: 20px; gap: 8px; }
+  .target-metric { padding: 13px; }
+  .target-number { font-size: 32px; }
+  .target-actions { padding-inline: 24px; }
   .semester-nav { gap: 2px; }
 }
 @media (max-width: 640px) {
@@ -228,6 +255,13 @@ dialog::backdrop { background: rgba(0,0,0,.8); }
   #gpa-chart { height: auto; max-height: 210px; margin-top: 16px; }
   .overview-stats { gap: 48px; }
   .transcript-section { margin-top: 40px; }
+  .target-panel { grid-template-columns: 1fr; margin-top: 16px; }
+  .target-intro { padding: 22px 20px; border-right: 0; }
+  .target-intro h2 { font-size: 28px; }
+  .target-metrics { padding: 16px 20px; border-top: 1px solid var(--border); }
+  .target-metric { min-height: 133px; padding: 12px; }
+  .target-number { font-size: 34px; }
+  .target-actions { padding: 18px 20px; }
   .section-heading { align-items: center; }
   .section-heading h2 { font-size: 22px; }
   .section-heading .eyebrow { font-size: 8px; max-width: 160px; }
