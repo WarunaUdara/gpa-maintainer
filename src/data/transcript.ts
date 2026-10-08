@@ -294,9 +294,9 @@ export const transcript: Semester[] = [
         "sno": 6,
         "code": "IIC3341",
         "title": "ICT Project",
-        "grade": "",
+        "grade": "A-",
         "ngpa": "No",
-        "remarks": "A"
+        "remarks": ""
       },
       {
         "sno": 7,

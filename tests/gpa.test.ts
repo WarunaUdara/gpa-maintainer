@@ -7,36 +7,36 @@ import { firstClassPlan } from '../src/lib/targets';
 
 const module = (grade: string, code = 'TEST0033', ngpa: 'Yes' | 'No' = 'No'): Module => ({ sno: 1, code, title: 'Test module', grade, ngpa, remarks: '' });
 
-test('semester 5 matches all six supplied results, while unpublished results stay pending', () => {
+test('semester 5 matches all seven supplied results, while unpublished results stay pending', () => {
   const semester = transcript[4];
   assert.deepEqual(Object.fromEntries(semester.modules.filter(item => item.grade).map(item => [item.code, item.grade])), {
-    IIC3293: 'A-', IIC3303: 'B', IIC3322: 'A-', IIS3353: 'A-', IIN3372: 'A-', IIN3382: 'A',
+    IIC3293: 'A-', IIC3303: 'B', IIC3322: 'A-', IIC3341: 'A-', IIS3353: 'A-', IIN3372: 'A-', IIN3382: 'A',
   });
   const stats = semesterStats(semester);
-  assert.equal(stats.credits, 15);
-  assert.ok(Math.abs(stats.weightedPoints - 54) < 1e-10);
-  assert.equal(formatGPA(stats.gpa), '3.60');
-  assert.equal(stats.recorded, 6);
-  assert.equal(stats.pending, 3);
+  assert.equal(stats.credits, 16);
+  assert.ok(Math.abs(stats.weightedPoints - 57.7) < 1e-10);
+  assert.equal(formatGPA(stats.gpa), '3.61');
+  assert.equal(stats.recorded, 7);
+  assert.equal(stats.pending, 2);
   assert.equal(stats.status, 'In progress');
 });
 
 test('CGPA weights all recorded module credits without rounding semester values first', () => {
   const overall = overallStats(transcript);
-  assert.equal(overall.credits, 75);
-  assert.ok(Math.abs(overall.weightedPoints - 279) < 1e-10);
+  assert.equal(overall.credits, 76);
+  assert.ok(Math.abs(overall.weightedPoints - 282.7) < 1e-10);
   assert.equal(formatGPA(overall.gpa), '3.72');
   assert.equal(overall.completed, 3);
-  assert.equal(overall.recorded, 33);
+  assert.equal(overall.recorded, 34);
   assert.equal(semesterStats(transcript[3]).status, 'In progress');
 });
 
 test('first-class plan uses recorded results through semester 5 and excludes unlisted internship credits', () => {
   const plan = firstClassPlan(transcript);
   assert.equal(plan.historicalThroughSemester, 5);
-  assert.equal(plan.historicalCredits, 75);
+  assert.equal(plan.historicalCredits, 76);
   assert.equal(formatGPA(plan.historicalGpa), '3.72');
-  assert.equal(plan.outstandingCredits, 21);
+  assert.equal(plan.outstandingCredits, 20);
   assert.equal(plan.minimumTarget, 3.63);
   assert.equal(formatGPA(plan.projectedAtTarget), '3.74');
   assert.equal(plan.requiredAGrades, 7);
