@@ -6,27 +6,27 @@ import { transcriptCSV } from '../src/lib/export';
 
 const module = (grade: string, code = 'TEST0033', ngpa: 'Yes' | 'No' = 'No'): Module => ({ sno: 1, code, title: 'Test module', grade, ngpa, remarks: '' });
 
-test('semester 5 matches all five supplied results, while unpublished results stay pending', () => {
+test('semester 5 matches all six supplied results, while unpublished results stay pending', () => {
   const semester = transcript[4];
   assert.deepEqual(Object.fromEntries(semester.modules.filter(item => item.grade).map(item => [item.code, item.grade])), {
-    IIC3303: 'B', IIC3322: 'A-', IIS3353: 'A-', IIN3372: 'A-', IIN3382: 'A',
+    IIC3293: 'A-', IIC3303: 'B', IIC3322: 'A-', IIS3353: 'A-', IIN3372: 'A-', IIN3382: 'A',
   });
   const stats = semesterStats(semester);
-  assert.equal(stats.credits, 12);
-  assert.ok(Math.abs(stats.weightedPoints - 42.9) < 1e-10);
-  assert.equal(formatGPA(stats.gpa), '3.58');
-  assert.equal(stats.recorded, 5);
-  assert.equal(stats.pending, 4);
+  assert.equal(stats.credits, 15);
+  assert.ok(Math.abs(stats.weightedPoints - 54) < 1e-10);
+  assert.equal(formatGPA(stats.gpa), '3.60');
+  assert.equal(stats.recorded, 6);
+  assert.equal(stats.pending, 3);
   assert.equal(stats.status, 'In progress');
 });
 
 test('CGPA weights all recorded module credits without rounding semester values first', () => {
   const overall = overallStats(transcript);
-  assert.equal(overall.credits, 72);
-  assert.ok(Math.abs(overall.weightedPoints - 267.9) < 1e-10);
+  assert.equal(overall.credits, 75);
+  assert.ok(Math.abs(overall.weightedPoints - 279) < 1e-10);
   assert.equal(formatGPA(overall.gpa), '3.72');
   assert.equal(overall.completed, 3);
-  assert.equal(overall.recorded, 32);
+  assert.equal(overall.recorded, 33);
   assert.equal(semesterStats(transcript[3]).status, 'In progress');
 });
 

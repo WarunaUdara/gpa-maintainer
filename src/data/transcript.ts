@@ -254,9 +254,9 @@ export const transcript: Semester[] = [
         "sno": 1,
         "code": "IIC3293",
         "title": "Service Oriented Architecture and Web Services",
-        "grade": "",
+        "grade": "A-",
         "ngpa": "No",
-        "remarks": "A"
+        "remarks": ""
       },
       {
         "sno": 2,
