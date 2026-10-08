@@ -1,0 +1,17 @@
+---
+import { getCreditsFromCode, gradePoints, isGpaModule, resultNote, type Module } from '../lib/gpa';
+interface Props { modules: Module[] }
+const { modules } = Astro.props;
+---
+{modules.length ? modules.map(module => (
+  <tr>
+    <td class="module-code">{module.code}</td>
+    <td class="module-title">{module.title}{module.ngpa === 'Yes' && <> <span class="mini-badge">NGPA</span></>}<span class="mobile-code">{module.code} · {getCreditsFromCode(module.code)} {getCreditsFromCode(module.code) === 1 ? 'credit' : 'credits'}</span></td>
+    <td class="numeric">{getCreditsFromCode(module.code)}</td>
+    <td><span class:list={['grade', { pending: !module.grade }]}>{module.grade || 'Pending'}</span></td>
+    <td class="numeric">{isGpaModule(module) ? gradePoints[module.grade].toFixed(2) : '—'}</td>
+    <td class="result-note">{resultNote(module)}</td>
+  </tr>
+)) : (
+  <tr><td colspan="6" class="empty-state">No modules recorded yet. This semester is still ahead.</td></tr>
+)}

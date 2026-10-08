@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+graphify-out/
+.graphify_cache/
+.DS_Store
+*.log
