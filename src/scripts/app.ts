@@ -106,10 +106,51 @@ function refresh() {
   setText('#recorded-count', overall.recorded);
   document.querySelector<HTMLElement>('#gpa-progress')!.style.width = `${(overall.gpa ?? 0) / 4 * 100}%`;
   setText('#overall-formula', overall.credits ? `${overall.weightedPoints.toFixed(2)} ÷ ${overall.credits} = ${formatGPA(overall.gpa)}` : 'No graded GPA credits');
+  const listedModules = overall.recorded + overall.pending;
+  setText('#overall-results-count', `${overall.recorded} / ${listedModules} results`);
+  const overallResultsBar = document.querySelector<HTMLElement>('#overall-results-bar')!;
+  overallResultsBar.style.width = `${listedModules ? overall.recorded / listedModules * 100 : 0}%`;
+  const overallResultsProgress = overallResultsBar.parentElement!;
+  overallResultsProgress.setAttribute('aria-valuemax', String(listedModules));
+  overallResultsProgress.setAttribute('aria-valuenow', String(overall.recorded));
+  overallResultsProgress.setAttribute('aria-valuetext', `${overall.recorded} of ${listedModules} listed modules have a result`);
   const summary = document.querySelector<HTMLTableSectionElement>('#summary-rows')!;
   summary.replaceChildren();
   for (const semester of semesters) {
     const stats = semesterStats(semester);
+    const progressRow = document.querySelector<HTMLElement>(`[data-progress-semester="${semester.id}"]`)!;
+    const bar = progressRow.querySelector<HTMLElement>('.progress-bar')!;
+    const fill = progressRow.querySelector<HTMLElement>('.progress-fill');
+    if (stats.total) {
+      const pct = stats.recorded / stats.total * 100;
+      if (fill) fill.style.width = `${pct}%`;
+      else {
+        const newFill = document.createElement('span');
+        newFill.className = 'progress-fill';
+        newFill.style.width = `${pct}%`;
+        bar.replaceChildren(newFill);
+        bar.classList.remove('progress-unlisted');
+        bar.setAttribute('role', 'progressbar');
+        bar.setAttribute('aria-label', `Semester ${semester.id} results recorded`);
+        bar.setAttribute('aria-valuemin', '0');
+      }
+      bar.setAttribute('aria-valuemax', String(stats.total));
+      bar.setAttribute('aria-valuenow', String(stats.recorded));
+      bar.setAttribute('aria-valuetext', `${stats.recorded} of ${stats.total} results recorded`);
+      setText('.progress-count', `${stats.recorded} / ${stats.total}`, progressRow);
+      setText('.progress-status', stats.recorded === stats.total ? 'Complete' : `${stats.total - stats.recorded} pending`, progressRow);
+    } else {
+      bar.classList.add('progress-unlisted');
+      bar.removeAttribute('role');
+      bar.removeAttribute('aria-label');
+      bar.removeAttribute('aria-valuemin');
+      bar.removeAttribute('aria-valuemax');
+      bar.removeAttribute('aria-valuenow');
+      bar.removeAttribute('aria-valuetext');
+      bar.replaceChildren();
+      setText('.progress-count', '—', progressRow);
+      setText('.progress-status', 'Modules not listed', progressRow);
+    }
     const panel = document.querySelector<HTMLElement>(`#semester-${semester.id}`)!;
     setText('[data-semester-gpa]', formatGPA(stats.gpa), panel);
     setText('[data-semester-progress]', `${stats.recorded} of ${stats.total} results recorded · ${stats.credits} graded GPA credits`, panel);

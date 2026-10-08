@@ -85,6 +85,25 @@ h1 > span { color: var(--fog); }
 .chart-legend i { height: 1px; width: 14px; background: var(--mist); }
 .chart-legend i.dashed { background: none; border-top: 1px dashed var(--fog); }
 .chart-legend .chart-note { margin-left: auto; font-size: 9px; }
+.completion-panel { grid-column: 1 / -1; padding: 22px 32px 20px; border-top: 1px solid var(--border); }
+.completion-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.completion-heading > div > p { color: var(--fog); font-size: 11px; margin-top: 4px; }
+.completion-heading > .mono { font-size: 10px; white-space: nowrap; }
+.overall-progress-track { height: 3px; overflow: hidden; border-radius: 2px; background: var(--border); margin: 18px 0 12px; }
+.overall-progress-track span { display: block; height: 100%; background: var(--mist); transition: width .2s ease; }
+.semester-progress-chart { display: grid; gap: 2px; }
+.progress-row { min-height: 30px; display: grid; grid-template-columns: 70px minmax(80px, 1fr) 44px 105px; align-items: center; gap: 12px; }
+.progress-semester, .progress-count { font-size: 10px; color: var(--mist); white-space: nowrap; }
+.progress-bar { position: relative; height: 5px; border-radius: 4px; overflow: hidden; background: var(--graphite, #23252a); }
+.progress-fill { display: block; height: 100%; border-radius: inherit; background: var(--mist); transition: width .2s ease; }
+.progress-unlisted { border: 1px dashed var(--smoke); background: transparent; }
+.progress-unlisted > span { display: none; }
+.progress-status { color: var(--fog); font-size: 10px; white-space: nowrap; }
+.progress-legend { display: flex; gap: 20px; margin: 12px 0 0 82px; color: var(--fog); font-size: 9px; }
+.progress-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.progress-legend i { width: 12px; height: 4px; border-radius: 3px; }
+.recorded-key { background: var(--mist); }
+.pending-key { background: var(--graphite, #23252a); border: 1px solid var(--smoke); }
 .transcript-section { margin-top: 64px; scroll-margin-top: 96px; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
 .section-heading h2 { font-size: 28px; letter-spacing: -.022em; line-height: 1.2; margin-top: 10px; }
@@ -178,6 +197,7 @@ dialog::backdrop { background: rgba(0,0,0,.8); }
   .overview-panel { grid-template-columns: .85fr 1.15fr; }
   .gpa-overview { padding: 24px; }
   .trend-panel { padding: 24px 20px; }
+  .completion-panel { padding: 20px 24px; }
   .chart-legend .chart-note { display: none; }
   .overview-stats { gap: 24px; }
   .status-pill { display: none; }
@@ -199,6 +219,12 @@ dialog::backdrop { background: rgba(0,0,0,.8); }
   .gpa-overview { border-right: 0; border-bottom: 1px solid var(--border); }
   .big-gpa > span:first-child { font-size: 72px; }
   .trend-panel { padding: 22px 24px; }
+  .completion-panel { padding: 20px 16px; }
+  .completion-heading > div > p { max-width: 200px; line-height: 1.5; }
+  .progress-row { grid-template-columns: 54px minmax(36px, 1fr) 38px 83px; gap: 7px; }
+  .progress-semester, .progress-count { font-size: 9px; }
+  .progress-status { font-size: 8px; }
+  .progress-legend { margin-left: 61px; font-size: 8px; }
   #gpa-chart { height: auto; max-height: 210px; margin-top: 16px; }
   .overview-stats { gap: 48px; }
   .transcript-section { margin-top: 40px; }

@@ -70,6 +70,25 @@ const chart = chartData(transcript);
           </svg>
           <div class="chart-legend"><span><i></i>Semester GPA</span><span><i class="dashed"></i>Cumulative GPA</span><span class="chart-note">Pending results excluded</span></div>
         </div>
+        <div class="completion-panel">
+          <div class="completion-heading"><div><span class="section-label">Results by semester</span><p>Track your published modules and results still to come.</p></div><span class="mono muted" id="overall-results-count">{overall.recorded} / {overall.recorded + overall.pending} results</span></div>
+          <div class="overall-progress-track" role="progressbar" aria-label="Results recorded across all listed modules" aria-valuemin="0" aria-valuemax={overall.recorded + overall.pending} aria-valuenow={overall.recorded} aria-valuetext={`${overall.recorded} of ${overall.recorded + overall.pending} listed modules have a result`}><span id="overall-results-bar" style={`width: ${overall.recorded + overall.pending ? overall.recorded / (overall.recorded + overall.pending) * 100 : 0}%`}></span></div>
+          <div class="semester-progress-chart" role="group" aria-label="Recorded results by semester">
+            {transcript.map(semester => {
+              const stats = semesterStats(semester);
+              const total = stats.total;
+              const pct = total ? stats.recorded / total * 100 : 0;
+              return <div class="progress-row" data-progress-semester={semester.id}>
+                <span class="progress-semester mono">Sem {String(semester.id).padStart(2, '0')}</span>
+                {total ? <div class="progress-bar" role="progressbar" aria-label={`Semester ${semester.id} results recorded`} aria-valuemin="0" aria-valuemax={total} aria-valuenow={stats.recorded} aria-valuetext={`${stats.recorded} of ${total} results recorded`}><span class="progress-fill" style={`width: ${pct}%`}></span></div>
+                  : <div class="progress-bar progress-unlisted" aria-hidden="true"><span></span></div>}
+                <span class="progress-count mono">{total ? `${stats.recorded} / ${total}` : '—'}</span>
+                <span class="progress-status">{total ? (stats.recorded === total ? 'Complete' : `${total - stats.recorded} pending`) : 'Modules not listed'}</span>
+              </div>;
+            })}
+          </div>
+          <div class="progress-legend"><span><i class="recorded-key"></i>Result recorded</span><span><i class="pending-key"></i>Awaiting result</span></div>
+        </div>
       </section>
 
       <section class="transcript-section" id="transcript" aria-labelledby="transcript-title">
