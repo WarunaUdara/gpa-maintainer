@@ -1,4 +1,5 @@
 import { calculateGPA, getCreditsFromCode, overallStats, type Semester } from './gpa';
+import { studyStage } from '../data/study-stage';
 
 export const FIRST_CLASS_THRESHOLD = 3.7;
 export const RECOMMENDED_GPA_TARGET = 3.8;
@@ -19,8 +20,9 @@ export function firstClassPlan(semesters: Semester[]) {
   const projectedAtTarget = outstandingCredits
     ? (current.weightedPoints + outstandingCredits * RECOMMENDED_GPA_TARGET) / (lockedCredits + outstandingCredits)
     : current.gpa;
-  const pastSemesters = semesters.filter(semester => semester.id <= 4);
+  const pastSemesters = semesters.filter(semester => semester.id < studyStage.currentSemester);
   const past = calculateGPA(pastSemesters.flatMap(semester => semester.modules));
+  const historicalThroughSemester = pastSemesters.at(-1)?.id ?? 0;
   const totalListedModules = semesters.reduce((sum, semester) => sum + semester.modules.length, 0);
   const unlistedSemesters = semesters.filter(semester => semester.id >= 7 && semester.modules.length === 0).length;
 
@@ -38,6 +40,7 @@ export function firstClassPlan(semesters: Semester[]) {
     projectedAtTarget,
     historicalGpa: past.gpa,
     historicalCredits: past.credits,
+    historicalThroughSemester,
     requiredAGrades: outstandingCredits ? Math.ceil((RECOMMENDED_GPA_TARGET - 3.7) / 0.3 * outstandingCredits - 1e-10) : 0,
     listedModuleCount: totalListedModules,
     recordedResultCount: current.recorded,

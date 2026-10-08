@@ -13,7 +13,7 @@ export interface Module {
   ngpa: 'Yes' | 'No';
   remarks: string;
 }
-export interface Semester { id: number; modules: Module[] }
+export interface Semester { id: number; modules: Module[]; label?: string }
 
 export function getCreditsFromCode(code: string): number {
   const finalDigit = code.trim().slice(-1);
@@ -53,6 +53,15 @@ export function semesterStats(semester: Semester) {
       .reduce((sum, module) => sum + getCreditsFromCode(module.code), 0),
     status,
   };
+}
+export function resultStatusLabel(
+  stats: Pick<ReturnType<typeof semesterStats>, 'recorded' | 'pending' | 'total'>,
+  semesterLabel?: string,
+): string {
+  if (!stats.total) return semesterLabel ? `${semesterLabel} next` : 'Modules not listed';
+  if (!stats.recorded) return 'Awaiting results';
+  if (!stats.pending) return 'All results recorded';
+  return `${stats.pending} ${stats.pending === 1 ? 'result' : 'results'} pending`;
 }
 export function overallStats(semesters: Semester[]) {
   const modules = semesters.flatMap(semester => semester.modules);

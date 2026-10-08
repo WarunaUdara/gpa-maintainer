@@ -387,6 +387,7 @@ export const transcript: Semester[] = [
   },
   {
     "id": 7,
+    "label": "Internship",
     "modules": []
   },
   {

@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { transcript } from '../src/data/transcript';
-import { applyOverrides, calculateGPA, formatGPA, getCreditsFromCode, isGpaModule, overallStats, semesterStats, type Module } from '../src/lib/gpa';
+import { applyOverrides, calculateGPA, formatGPA, getCreditsFromCode, isGpaModule, overallStats, resultStatusLabel, semesterStats, type Module } from '../src/lib/gpa';
 import { transcriptCSV } from '../src/lib/export';
+import { firstClassPlan } from '../src/lib/targets';
 
 const module = (grade: string, code = 'TEST0033', ngpa: 'Yes' | 'No' = 'No'): Module => ({ sno: 1, code, title: 'Test module', grade, ngpa, remarks: '' });
 
@@ -30,6 +31,17 @@ test('CGPA weights all recorded module credits without rounding semester values 
   assert.equal(semesterStats(transcript[3]).status, 'In progress');
 });
 
+test('first-class plan uses recorded results through semester 5 and excludes unlisted internship credits', () => {
+  const plan = firstClassPlan(transcript);
+  assert.equal(plan.historicalThroughSemester, 5);
+  assert.equal(plan.historicalCredits, 75);
+  assert.equal(formatGPA(plan.historicalGpa), '3.72');
+  assert.equal(plan.outstandingCredits, 21);
+  assert.equal(plan.minimumTarget, 3.63);
+  assert.equal(formatGPA(plan.projectedAtTarget), '3.74');
+  assert.equal(plan.requiredAGrades, 7);
+});
+
 test('failure grades count as zero points with credits; pending, NGPA, and special grades are excluded', () => {
   const result = calculateGPA([module('A'), module('F', 'TEST0022'), module('E', 'TEST0011'), module(''), module('W'), module('toString'), module('A', 'TEST0044', 'Yes')]);
   assert.equal(result.credits, 6);
@@ -45,6 +57,12 @@ test('semester completion requires every listed result, including NGPA modules',
   assert.equal(semesterStats({ id: 1, modules: [module('F'), module('A', 'TEST0011', 'Yes')] }).status, 'Completed');
   assert.equal(semesterStats({ id: 1, modules: [module('')] }).status, 'Pending');
   assert.equal(semesterStats({ id: 1, modules: [] }).status, 'Pending');
+});
+
+test('result labels stay separate from academic term status', () => {
+  assert.equal(resultStatusLabel(semesterStats({ id: 5, modules: [module('A'), module('')] })), '1 result pending');
+  assert.equal(resultStatusLabel(semesterStats({ id: 6, modules: [module('')] })), 'Awaiting results');
+  assert.equal(resultStatusLabel(semesterStats({ id: 7, modules: [] }), 'Internship'), 'Internship next');
 });
 
 test('local edits do not mutate the source, accept zero grades, and reject stale or corrupt storage', () => {

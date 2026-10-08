@@ -1,12 +1,13 @@
 import { transcript } from '../data/transcript';
 import {
-  applyOverrides, formatGPA, getCreditsFromCode, gradeOptions, gradePoints,
+  applyOverrides, formatGPA, getCreditsFromCode, gradeOptions, gradePoints, resultStatusLabel,
   isGpaModule, isRecordedGrade, overallStats, resultNote, semesterStats,
   type GradeOverride, type Semester,
 } from '../lib/gpa';
 import { chartData } from '../lib/chart';
 import { transcriptCSV } from '../lib/export';
 import { firstClassPlan } from '../lib/targets';
+import { studyStage } from '../data/study-stage';
 
 const STORAGE_KEY = 'gpa-maintainer:grade-overrides:v2';
 let overrides: Record<string, GradeOverride> = {};
@@ -26,7 +27,7 @@ try {
 } catch { storageAvailable = false; }
 
 let semesters = applyOverrides(transcript, overrides);
-let selectedSemester = 5;
+let selectedSemester: number = studyStage.currentSemester;
 const dialog = document.querySelector<HTMLDialogElement>('#grade-dialog')!;
 const form = document.querySelector<HTMLFormElement>('#grade-form')!;
 let toastTimeout: ReturnType<typeof setTimeout>;
@@ -112,16 +113,15 @@ function refreshFirstClassPlan() {
   setText('#target-a-credits', plan.requiredAGrades);
   setText('#target-minimum-caption', !plan.outstandingCredits ? 'No ungraded GPA credits are listed.'
     : plan.minimumReachable ? `Minimum weighted average on these ${plan.outstandingCredits} ungraded GPA credits to finish above 3.70.`
-      : `These listed credits alone cannot restore a 3.70 CGPA. Semesters 7–8 need published module lists.`);
+      : `These listed credits alone cannot restore a 3.70 CGPA. Internship grading and credits, plus Semester 8 courses, are not included yet.`);
   setText('#target-projection-caption', plan.outstandingCredits
-    ? `At a 3.80 average over those ${plan.outstandingCredits} listed credits, your projected CGPA is ${formatGPA(plan.projectedAtTarget)}. Later course credits are not yet listed.`
+    ? `At a 3.80 average over those ${plan.outstandingCredits} listed credits, your projected CGPA is ${formatGPA(plan.projectedAtTarget)}. Internship grading and credits are not listed, so it is excluded.`
     : `Your current projected CGPA is ${formatGPA(plan.projectedAtTarget)}. Record your future course credits to set the next target.`);
 }
 function refresh() {
   const overall = overallStats(semesters);
   setText('#overall-gpa', formatGPA(overall.gpa));
   setText('#overall-credits', overall.credits);
-  setText('#completed-count', overall.completed);
   setText('#recorded-count', overall.recorded);
   document.querySelector<HTMLElement>('#gpa-progress')!.style.width = `${(overall.gpa ?? 0) / 4 * 100}%`;
   setText('#overall-formula', overall.credits ? `${overall.weightedPoints.toFixed(2)} ÷ ${overall.credits} = ${formatGPA(overall.gpa)}` : 'No graded GPA credits');
@@ -168,12 +168,12 @@ function refresh() {
       bar.removeAttribute('aria-valuetext');
       bar.replaceChildren();
       setText('.progress-count', '—', progressRow);
-      setText('.progress-status', 'Modules not listed', progressRow);
+      setText('.progress-status', semester.label ? `${semester.label} next` : 'Modules not listed', progressRow);
     }
     const panel = document.querySelector<HTMLElement>(`#semester-${semester.id}`)!;
     setText('[data-semester-gpa]', formatGPA(stats.gpa), panel);
     setText('[data-semester-progress]', `${stats.recorded} of ${stats.total} results recorded · ${stats.credits} graded GPA credits`, panel);
-    setText('[data-semester-status]', stats.status, panel);
+    setText('[data-semester-status]', resultStatusLabel(stats, semester.label), panel);
     setText('[data-semester-note]', stats.pending > 0 ? `${stats.pending} results pending. SGPA reflects recorded GPA results only.`
       : stats.total ? 'All results recorded. NGPA modules are excluded from calculations.' : 'Results will appear here when modules are added.', panel);
     setText('[data-semester-formula]', stats.credits ? `${stats.weightedPoints.toFixed(2)} ÷ ${stats.credits} = ${formatGPA(stats.gpa)}` : 'No graded GPA credits', panel);
@@ -184,14 +184,14 @@ function refresh() {
     const link = document.createElement('a');
     link.href = `#semester-${semester.id}`;
     link.dataset.view = `semester-${semester.id}`;
-    link.textContent = `Semester ${String(semester.id).padStart(2, '0')}`;
+    link.textContent = `Semester ${String(semester.id).padStart(2, '0')}${semester.label ? ` · ${semester.label}` : ''}`;
     row.insertCell().append(link);
     cell(row, formatGPA(stats.gpa), 'mono');
     cell(row, stats.credits, 'mono');
     cell(row, `${stats.recorded} / ${stats.total}`);
     const pill = document.createElement('span');
     pill.className = 'pill';
-    pill.textContent = stats.status;
+    pill.textContent = resultStatusLabel(stats, semester.label);
     row.insertCell().append(pill);
   }
   renderChart();
@@ -327,10 +327,10 @@ const adminPanel = {
   viewData: () => console.log({ semesterData: semesters, gradePoints }),
   gradePoints,
   refresh,
-  help: () => console.info('Use adminPanel.updateGrade(5, "IIS3353", "A-") to update a grade. Edits are saved locally; use Export CSV to keep a copy. Published modules live in src/data/transcript.ts.'),
+  help: () => console.info('Use adminPanel.updateGrade(semester, code, grade) to update a grade. Edits are saved locally; use Export CSV to keep a copy. Published modules live in src/data/transcript.ts.'),
 };
 declare global { interface Window { adminPanel: typeof adminPanel } }
 window.adminPanel = adminPanel;
 document.body.classList.add('js-enabled');
-selectView(/^(semester-[1-8]|summary)$/.test(location.hash.slice(1)) ? location.hash.slice(1) : 'semester-5', false);
+selectView(/^(semester-[1-8]|summary)$/.test(location.hash.slice(1)) ? location.hash.slice(1) : `semester-${studyStage.currentSemester}`, false);
 refresh();
