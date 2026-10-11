@@ -270,9 +270,9 @@ export const transcript: Semester[] = [
         "sno": 3,
         "code": "IIC3312",
         "title": "Literature Study and Presentation",
-        "grade": "",
+        "grade": "B+",
         "ngpa": "No",
-        "remarks": "A"
+        "remarks": ""
       },
       {
         "sno": 4,

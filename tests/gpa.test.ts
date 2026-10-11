@@ -7,39 +7,39 @@ import { firstClassPlan } from '../src/lib/targets';
 
 const module = (grade: string, code = 'TEST0033', ngpa: 'Yes' | 'No' = 'No'): Module => ({ sno: 1, code, title: 'Test module', grade, ngpa, remarks: '' });
 
-test('semester 5 matches all eight supplied results, while unpublished results stay pending', () => {
+test('semester 5 matches all nine supplied results, completing the semester', () => {
   const semester = transcript[4];
   assert.deepEqual(Object.fromEntries(semester.modules.filter(item => item.grade).map(item => [item.code, item.grade])), {
-    IIC3293: 'A-', IIC3303: 'B', IIC3322: 'A-', IIC3331: 'B', IIC3341: 'A-', IIS3353: 'A-', IIN3372: 'A-', IIN3382: 'A',
+    IIC3293: 'A-', IIC3303: 'B', IIC3312: 'B+', IIC3322: 'A-', IIC3331: 'B', IIC3341: 'A-', IIS3353: 'A-', IIN3372: 'A-', IIN3382: 'A',
   });
   const stats = semesterStats(semester);
-  assert.equal(stats.credits, 16);
-  assert.ok(Math.abs(stats.weightedPoints - 57.7) < 1e-10);
-  assert.equal(formatGPA(stats.gpa), '3.61');
-  assert.equal(stats.recorded, 8);
-  assert.equal(stats.pending, 1);
-  assert.equal(stats.status, 'In progress');
+  assert.equal(stats.credits, 18);
+  assert.ok(Math.abs(stats.weightedPoints - 64.3) < 1e-10);
+  assert.equal(formatGPA(stats.gpa), '3.57');
+  assert.equal(stats.recorded, 9);
+  assert.equal(stats.pending, 0);
+  assert.equal(stats.status, 'Completed');
 });
 
 test('CGPA weights all recorded module credits without rounding semester values first', () => {
   const overall = overallStats(transcript);
-  assert.equal(overall.credits, 76);
-  assert.ok(Math.abs(overall.weightedPoints - 282.7) < 1e-10);
-  assert.equal(formatGPA(overall.gpa), '3.72');
-  assert.equal(overall.completed, 3);
-  assert.equal(overall.recorded, 35);
+  assert.equal(overall.credits, 78);
+  assert.ok(Math.abs(overall.weightedPoints - 289.3) < 1e-10);
+  assert.equal(formatGPA(overall.gpa), '3.71');
+  assert.equal(overall.completed, 4);
+  assert.equal(overall.recorded, 36);
   assert.equal(semesterStats(transcript[3]).status, 'In progress');
 });
 
 test('first-class plan uses recorded results through semester 5 and excludes unlisted internship credits', () => {
   const plan = firstClassPlan(transcript);
   assert.equal(plan.historicalThroughSemester, 5);
-  assert.equal(plan.historicalCredits, 76);
-  assert.equal(formatGPA(plan.historicalGpa), '3.72');
-  assert.equal(plan.outstandingCredits, 20);
-  assert.equal(plan.minimumTarget, 3.63);
-  assert.equal(formatGPA(plan.projectedAtTarget), '3.74');
-  assert.equal(plan.requiredAGrades, 7);
+  assert.equal(plan.historicalCredits, 78);
+  assert.equal(formatGPA(plan.historicalGpa), '3.71');
+  assert.equal(plan.outstandingCredits, 18);
+  assert.equal(plan.minimumTarget, 3.67);
+  assert.equal(formatGPA(plan.projectedAtTarget), '3.73');
+  assert.equal(plan.requiredAGrades, 6);
 });
 
 test('failure grades count as zero points with credits; pending, NGPA, and special grades are excluded', () => {
