@@ -107,10 +107,13 @@ function refreshFirstClassPlan() {
     : plan.currentMargin > 0 ? `${plan.currentMargin.toFixed(2)} above`
       : plan.currentMargin < 0 ? `${Math.abs(plan.currentMargin).toFixed(2)} below` : 'on');
   setText('#past-weighted-gpa', formatGPA(plan.historicalGpa));
+  setText('#past-historical-credits', plan.historicalCredits);
   setText('#target-minimum-gpa', plan.minimumTarget?.toFixed(2) ?? '—');
   setText('#target-floor-rule', plan.minimumTarget === null ? '—' : `${plan.minimumTarget.toFixed(2)} or higher`);
   setText('#target-outstanding-credits', plan.outstandingCredits);
   setText('#target-a-credits', plan.requiredAGrades);
+  setText('#target-footnote-current-credits', plan.currentCredits);
+  setText('#target-footnote-outstanding-credits', plan.outstandingCredits);
   setText('#target-minimum-caption', !plan.outstandingCredits ? 'No ungraded GPA credits are listed.'
     : plan.minimumReachable ? `Minimum weighted average on these ${plan.outstandingCredits} ungraded GPA credits to finish above 3.70.`
       : `These listed credits alone cannot restore a 3.70 CGPA. Internship grading and credits, plus Semester 8 courses, are not included yet.`);
