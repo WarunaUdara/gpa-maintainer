@@ -286,7 +286,7 @@ export const transcript: Semester[] = [
         "sno": 5,
         "code": "IIC3331",
         "title": "Professional Ethics",
-        "grade": "",
+        "grade": "B",
         "ngpa": "Yes",
         "remarks": "NGPA Module"
       },
