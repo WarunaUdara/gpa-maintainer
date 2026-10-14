@@ -23,7 +23,7 @@ const targets = firstClassPlan(transcript);
     <title>GPA Maintainer — Academic overview</title>
   </head>
   <body>
-    <a class="skip-link" href="#transcript">Skip to transcript</a>
+    <a class="skip-link" href="#transcript">Skip to semester details</a>
     <header class="site-header">
       <div class="nav-inner">
         <a class="brand" href={import.meta.env.BASE_URL} aria-label="GPA Maintainer home">
@@ -31,8 +31,8 @@ const targets = firstClassPlan(transcript);
           <span>GPA<span class="brand-secondary"> / Maintainer</span></span>
         </a>
         <nav aria-label="Main navigation">
-          <a class="nav-current" href="#overview">Overview</a>
-          <a href="#transcript">Transcript</a>
+          <a class="nav-current" href="#transcript">Semesters</a>
+          <a href="#overview">Overview</a>
           <a href="#targets">Targets</a>
           <span class="nav-divider"></span>
           <button class="text-button" id="export-button" type="button"><Icon name="download" /><span>Export CSV</span></button>
@@ -40,17 +40,51 @@ const targets = firstClassPlan(transcript);
       </div>
     </header>
 
-    <main class="page-shell" id="overview">
+    <main class="page-shell">
       <section class="intro" aria-labelledby="page-title">
         <div>
           <p class="eyebrow"><span class="tiny-mark"></span> YOUR ACADEMIC WORKSPACE</p>
-          <h1 id="page-title">Your progress,<br /><span>in perspective.</span></h1>
-          <p class="intro-description">Every semester. Every result. A clearer picture of how far you’ve come.</p>
+          <h1 id="page-title">Semester {studyStage.currentSemester}<span>, in focus.</span></h1>
+          <p class="intro-description">Your current modules and results, front and center.</p>
         </div>
         <div class="intro-meta"><span class="pill">Semester {studyStage.currentSemester} · In progress</span><p>Next: Internship · Semester {studyStage.internshipSemester}</p></div>
       </section>
 
-      <section class="overview-panel" aria-label="Cumulative GPA overview">
+      <section class="transcript-section" id="transcript" aria-labelledby="transcript-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">YOUR SEMESTERS</p><h2 id="transcript-title">Semester details</h2></div>
+          <button class="primary-button js-control" id="edit-button" type="button"><Icon name="edit" />Update grades</button>
+        </div>
+        <nav class="semester-nav" aria-label="Semester navigation">
+          {transcript.map(semester => <a href={`#semester-${semester.id}`} data-view={`semester-${semester.id}`} class:list={[{ active: semester.id === studyStage.currentSemester }]} aria-current={semester.id === studyStage.currentSemester ? 'true' : undefined} aria-label={semester.label ? `Semester ${semester.id}, ${semester.label}` : semester.id === studyStage.currentSemester ? `Semester ${semester.id}, current semester` : undefined}><span class="semester-short">Sem</span><span class="semester-long">Semester</span> {String(semester.id).padStart(2, '0')}{semester.id === studyStage.currentSemester && <span class="stage-chip">Current</span>}{semester.label && <span class="stage-chip">{semester.label}</span>}<span class:list={['tab-dot', { 'is-complete': semesterStats(semester).status === 'Completed' }]}></span></a>)}
+          <a href="#summary" data-view="summary" class="summary-tab">Summary<Icon name="arrow" size={14} /></a>
+        </nav>
+
+        {transcript.map(semester => {
+          const stats = semesterStats(semester);
+          return <section class:list={['transcript-panel', { 'active-panel': semester.id === studyStage.currentSemester }]} id={`semester-${semester.id}`} aria-labelledby={`semester-title-${semester.id}`} data-semester={semester.id}>
+            <div class="panel-header">
+              <div class="panel-title"><span class="semester-icon"><Icon name="book" size={20} /></span><div><h3 id={`semester-title-${semester.id}`}>Semester {String(semester.id).padStart(2, '0')}{semester.label && ` · ${semester.label}`}{semester.id === studyStage.currentSemester && ' · Current'}</h3><p data-semester-progress>{stats.recorded} of {stats.total} results recorded · {stats.credits} graded GPA credits</p></div><span class="pill status-pill" data-semester-status>{resultStatusLabel(stats, semester.label)}</span></div>
+              <div class="semester-gpa"><span data-semester-gpa>{formatGPA(stats.gpa)}</span><span class="mono muted">SGPA</span></div>
+            </div>
+            <div class="table-scroll" tabindex="0" role="region" aria-label={`Semester ${semester.id} modules`}>
+              <table class="modules-table"><thead><tr><th scope="col">Module code</th><th scope="col">Module title</th><th scope="col" class="numeric">Credits</th><th scope="col">Grade</th><th scope="col" class="numeric">Points</th><th scope="col">Result status</th></tr></thead><tbody data-module-rows><ModuleRows modules={semester.modules} /></tbody></table>
+            </div>
+            <div class="panel-footer"><p data-semester-note>{stats.pending > 0 ? `${stats.pending} results pending. SGPA reflects recorded GPA results only.` : stats.total ? 'All results recorded. NGPA modules are excluded from calculations.' : 'Results will appear here when modules are added.'}</p><span class="mono" data-semester-formula>{stats.credits ? `${stats.weightedPoints.toFixed(2)} ÷ ${stats.credits} = ${formatGPA(stats.gpa)}` : 'No graded GPA credits'}</span></div>
+          </section>;
+        })}
+
+        <section class="transcript-panel" id="summary" aria-labelledby="summary-title">
+          <div class="panel-header"><div><h3 id="summary-title">All semesters, at a glance</h3><p class="muted small">Credits shown here are graded GPA credits.</p></div><span class="pill">Credit weighted</span></div>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Semester summary"><table class="summary-table"><thead><tr><th scope="col">Semester</th><th scope="col">SGPA</th><th scope="col">Graded credits</th><th scope="col">Recorded results</th><th scope="col">Status</th></tr></thead><tbody id="summary-rows">{transcript.map(semester => { const stats = semesterStats(semester); return <tr><td><a href={`#semester-${semester.id}`} data-view={`semester-${semester.id}`}>Semester {String(semester.id).padStart(2, '0')}{semester.label && ` · ${semester.label}`}</a></td><td class="mono">{formatGPA(stats.gpa)}</td><td class="mono">{stats.credits}</td><td>{stats.recorded} / {stats.total}</td><td><span class="pill">{resultStatusLabel(stats, semester.label)}</span></td></tr>; })}</tbody></table></div>
+          <div class="panel-footer"><p>CGPA uses every recorded GPA result, including semesters in progress.</p><span class="mono" id="overall-formula">{overall.weightedPoints.toFixed(2)} ÷ {overall.credits} = {formatGPA(overall.gpa)}</span></div>
+        </section>
+        <noscript><p class="notice">All semester records are shown below. Enable JavaScript to switch views, update grades, or export your transcript.</p></noscript>
+        <p class="storage-note" id="storage-note"><Icon name="check" size={14} />Published transcript · <span>Grade edits stay in this browser.</span></p>
+      </section>
+
+
+      <section class="overview-panel" id="overview" aria-label="Cumulative GPA overview">
         <div class="gpa-overview">
           <div class="section-label">Cumulative GPA <span class="mini-badge">Provisional</span></div>
           <div class="big-gpa"><span id="overall-gpa">{formatGPA(overall.gpa)}</span><span class="gpa-scale">/ 4.00</span></div>
@@ -116,39 +150,6 @@ const targets = firstClassPlan(transcript);
           </ol>
           <p class="target-footnote"><span class="tiny-mark"></span> With five semesters completed and Semester 6 in progress, this projection uses your <span id="target-footnote-current-credits">{targets.currentCredits}</span> recorded GPA credits plus <span id="target-footnote-outstanding-credits">{targets.outstandingCredits}</span> ungraded GPA credits listed across Semesters 4–6. No estimated grades are assumed—pending courses are evaluated purely against the required targets. Semester 7 is your internship; its grading and credits are unknown, so it and the unlisted Semester 8 courses are excluded.</p>
         </div>
-      </section>
-
-      <section class="transcript-section" id="transcript" aria-labelledby="transcript-title">
-        <div class="section-heading">
-          <div><p class="eyebrow">THE DETAILS BEHIND THE NUMBER</p><h2 id="transcript-title">Academic transcript</h2></div>
-          <button class="primary-button js-control" id="edit-button" type="button"><Icon name="edit" />Update grades</button>
-        </div>
-        <nav class="semester-nav" aria-label="Semester navigation">
-          {transcript.map(semester => <a href={`#semester-${semester.id}`} data-view={`semester-${semester.id}`} class:list={[{ active: semester.id === studyStage.currentSemester }]} aria-current={semester.id === studyStage.currentSemester ? 'true' : undefined} aria-label={semester.label ? `Semester ${semester.id}, ${semester.label}` : semester.id === studyStage.currentSemester ? `Semester ${semester.id}, current semester` : undefined}><span class="semester-short">Sem</span><span class="semester-long">Semester</span> {String(semester.id).padStart(2, '0')}{semester.id === studyStage.currentSemester && <span class="stage-chip">Current</span>}{semester.label && <span class="stage-chip">{semester.label}</span>}<span class:list={['tab-dot', { 'is-complete': semesterStats(semester).status === 'Completed' }]}></span></a>)}
-          <a href="#summary" data-view="summary" class="summary-tab">Summary<Icon name="arrow" size={14} /></a>
-        </nav>
-
-        {transcript.map(semester => {
-          const stats = semesterStats(semester);
-          return <section class:list={['transcript-panel', { 'active-panel': semester.id === studyStage.currentSemester }]} id={`semester-${semester.id}`} aria-labelledby={`semester-title-${semester.id}`} data-semester={semester.id}>
-            <div class="panel-header">
-              <div class="panel-title"><span class="semester-icon"><Icon name="book" size={20} /></span><div><h3 id={`semester-title-${semester.id}`}>Semester {String(semester.id).padStart(2, '0')}{semester.label && ` · ${semester.label}`}{semester.id === studyStage.currentSemester && ' · Current'}</h3><p data-semester-progress>{stats.recorded} of {stats.total} results recorded · {stats.credits} graded GPA credits</p></div><span class="pill status-pill" data-semester-status>{resultStatusLabel(stats, semester.label)}</span></div>
-              <div class="semester-gpa"><span data-semester-gpa>{formatGPA(stats.gpa)}</span><span class="mono muted">SGPA</span></div>
-            </div>
-            <div class="table-scroll" tabindex="0" role="region" aria-label={`Semester ${semester.id} modules`}>
-              <table class="modules-table"><thead><tr><th scope="col">Module code</th><th scope="col">Module title</th><th scope="col" class="numeric">Credits</th><th scope="col">Grade</th><th scope="col" class="numeric">Points</th><th scope="col">Result status</th></tr></thead><tbody data-module-rows><ModuleRows modules={semester.modules} /></tbody></table>
-            </div>
-            <div class="panel-footer"><p data-semester-note>{stats.pending > 0 ? `${stats.pending} results pending. SGPA reflects recorded GPA results only.` : stats.total ? 'All results recorded. NGPA modules are excluded from calculations.' : 'Results will appear here when modules are added.'}</p><span class="mono" data-semester-formula>{stats.credits ? `${stats.weightedPoints.toFixed(2)} ÷ ${stats.credits} = ${formatGPA(stats.gpa)}` : 'No graded GPA credits'}</span></div>
-          </section>;
-        })}
-
-        <section class="transcript-panel" id="summary" aria-labelledby="summary-title">
-          <div class="panel-header"><div><h3 id="summary-title">All semesters, at a glance</h3><p class="muted small">Credits shown here are graded GPA credits.</p></div><span class="pill">Credit weighted</span></div>
-          <div class="table-scroll" tabindex="0" role="region" aria-label="Semester summary"><table class="summary-table"><thead><tr><th scope="col">Semester</th><th scope="col">SGPA</th><th scope="col">Graded credits</th><th scope="col">Recorded results</th><th scope="col">Status</th></tr></thead><tbody id="summary-rows">{transcript.map(semester => { const stats = semesterStats(semester); return <tr><td><a href={`#semester-${semester.id}`} data-view={`semester-${semester.id}`}>Semester {String(semester.id).padStart(2, '0')}{semester.label && ` · ${semester.label}`}</a></td><td class="mono">{formatGPA(stats.gpa)}</td><td class="mono">{stats.credits}</td><td>{stats.recorded} / {stats.total}</td><td><span class="pill">{resultStatusLabel(stats, semester.label)}</span></td></tr>; })}</tbody></table></div>
-          <div class="panel-footer"><p>CGPA uses every recorded GPA result, including semesters in progress.</p><span class="mono" id="overall-formula">{overall.weightedPoints.toFixed(2)} ÷ {overall.credits} = {formatGPA(overall.gpa)}</span></div>
-        </section>
-        <noscript><p class="notice">All semester records are shown below. Enable JavaScript to switch views, update grades, or export your transcript.</p></noscript>
-        <p class="storage-note" id="storage-note"><Icon name="check" size={14} />Published transcript · <span>Grade edits stay in this browser.</span></p>
       </section>
 
       <section class="method-section" aria-label="Calculation method">

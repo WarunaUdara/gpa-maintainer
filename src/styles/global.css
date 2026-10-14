@@ -47,12 +47,12 @@ button:focus-visible, a:focus-visible, select:focus-visible, [tabindex]:focus-vi
 .nav-divider { height: 18px; width: 1px; background: var(--border); }
 .text-button { padding: 0; background: none; border: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
 .text-button:hover { color: var(--white); }
-.intro { padding: 64px 0 40px; display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+.intro { padding: 34px 0 22px; display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
 .eyebrow { font-size: 11px; font-weight: 510; letter-spacing: .1em; color: var(--fog); display: flex; align-items: center; gap: 8px; }
 .tiny-mark { width: 6px; height: 6px; border: 1px solid var(--fog); border-radius: 50%; }
-h1 { margin-top: 20px; font-size: clamp(46px, 5vw, 64px); line-height: 1.06; letter-spacing: -.022em; }
+h1 { margin-top: 10px; font-size: clamp(38px, 4vw, 48px); line-height: 1.06; letter-spacing: -.022em; }
 h1 > span { color: var(--fog); }
-.intro-description { margin-top: 20px; font-size: 17px; color: var(--fog); letter-spacing: -.011em; line-height: 1.65; max-width: 500px; }
+.intro-description { margin-top: 8px; font-size: 15px; color: var(--fog); letter-spacing: -.011em; line-height: 1.65; max-width: 500px; }
 .intro-meta { text-align: right; padding-bottom: 4px; }
 .intro-meta p { color: var(--fog); font-size: 14px; margin-top: 10px; }
 .pill { display: inline-flex; align-items: center; background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--mist); border-radius: 9999px; padding: 5px 11px; font-size: 12px; white-space: nowrap; }
@@ -130,7 +130,7 @@ h1 > span { color: var(--fog); }
 .progress-legend i { width: 12px; height: 4px; border-radius: 3px; }
 .recorded-key { background: var(--mist); }
 .pending-key { background: var(--graphite, #23252a); border: 1px solid var(--smoke); }
-.transcript-section { margin-top: 64px; scroll-margin-top: 96px; }
+.transcript-section { margin-top: 0; scroll-margin-top: 96px; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
 .section-heading h2 { font-size: 32px; letter-spacing: -.022em; line-height: 1.2; margin-top: 10px; }
 .primary-button, .ghost-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 6px; padding: 11px 15px; font-size: 14px; font-weight: 510; border: 1px solid transparent; transition: background .15s; }
@@ -245,7 +245,7 @@ dialog::backdrop { background: rgba(0,0,0,.8); }
   .brand { font-size: 15px; gap: 8px; }
   .text-button { font-size: 12px; }
   .intro { padding-top: 40px; padding-bottom: 28px; }
-  h1 { font-size: 48px; }
+  h1 { font-size: 36px; line-height: 1.15; }
   .intro-description { font-size: 15px; max-width: 340px; line-height: 1.7; }
   .eyebrow { font-size: 10px; letter-spacing: .1em; }
   .overview-panel { grid-template-columns: 1fr; }
@@ -260,7 +260,7 @@ dialog::backdrop { background: rgba(0,0,0,.8); }
   .progress-legend { margin-left: 61px; font-size: 10px; }
   #gpa-chart { height: auto; max-height: 210px; margin-top: 16px; }
   .overview-stats { gap: 48px; }
-  .transcript-section { margin-top: 40px; }
+  .transcript-section { margin-top: 0; }
   .target-panel { grid-template-columns: 1fr; margin-top: 16px; }
   .target-intro { padding: 22px 20px; border-right: 0; }
   .target-intro h2 { font-size: 31px; }
